@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SchemeEase AI-Powered Platform</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <nav class="navbar">
+            <div class="logo">
+                <h1>SchemeEase</h1>
+            </div>
+            <div class="nav-links">
+                <a href="#home" class="active" data-translate="home">Home</a>
+                <a href="#schemes" onclick="toggleSchemes(event)" data-translate="schemes">Schemes</a>
+                <a href="user-guide.html" data-translate="userGuide">User Guide</a>
+                <a href="support-center.html" data-translate="supportCenter">Support Center</a>
+                <a href="#profile" id="profile-link" class="hidden" data-translate="myProfile">My Profile</a>
+                <a href="#notifications" class="hidden" data-translate="notifications">Notifications</a>
+                <select id="language-selector">
+                    <option value="en">English</option>
+                    <option value="hi">हिंदी</option>
+                    <option value="gu">ગુજરાતી</option>
+                    <option value="te">తెలుగు</option>
+                    <option value="ta">தமிழ்</option>
+                </select>
+                <div class="auth-buttons" id="auth-buttons">
+                    <button onclick="showLoginModal()" class="login-btn" data-translate="login">Login</button>
+                    <button onclick="showRegisterModal()" class="register-btn" data-translate="register">Register</button>
+                </div>
+                <div class="user-profile hidden" id="user-profile">
+                    <img src="https://via.placeholder.com/32" alt="Profile" class="profile-pic">
+                    <div class="dropdown-content">
+                        <a href="#profile" data-translate="myProfile">My Profile</a>
+                        <a href="#saved-schemes" data-translate="savedSchemes">Saved Schemes</a>
+                        <a href="#applications" data-translate="myApplications">My Applications</a>
+                        <a href="#settings" data-translate="settings">Settings</a>
+                        <a href="#" onclick="logout()" data-translate="logout">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content auth-modal">
+            <span class="close-button" onclick="closeModal('login-modal')">&times;</span>
+            <h2>Login</h2>
+            <form id="login-form" class="auth-form">
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" required>
+                    <a href="#" class="forgot-password">Forgot Password?</a>
+                </div>
+                <button type="submit" class="submit-button">Login</button>
+                <div class="auth-separator">
+                    <span>OR</span>
+                </div>
+                <div class="social-login">
+                    <button type="button" class="google-btn">
+                        <i class="fab fa-google"></i> Continue with Google
+                    </button>
+                    <button type="button" class="facebook-btn">
+                        <i class="fab fa-facebook-f"></i> Continue with Facebook
+                    </button>
+                </div>
+            </form>
+            <p class="auth-switch">
+                Don't have an account? <a href="#" onclick="switchToRegister()">Register</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Secure Authentication Section -->
+    <section id="secure-auth" class="secure-auth-section">
+        <div class="container">
+            <h2>Secure Authentication</h2>
+            <p class="section-description">Choose your preferred secure authentication method</p>
+            
+            <div class="auth-methods">
+                <div class="auth-method-card" onclick="selectAuthMethod('aadhaar')">
+                    <i class="fas fa-id-card"></i>
+                    <h3>Aadhaar Authentication</h3>
+                    <p>Login securely using your Aadhaar number and biometric/OTP</p>
+                    <div id="aadhaar-form" class="auth-method-form hidden">
+                        <div class="form-group">
+                            <label for="aadhaar-number">Aadhaar Number</label>
+                            <input type="text" id="aadhaar-number" pattern="\d{12}" maxlength="12" placeholder="Enter 12-digit Aadhaar number">
+                        </div>
+                        <div class="verification-options">
+                            <button type="button" class="verify-btn biometric">
+                                <i class="fas fa-fingerprint"></i>
+                                Verify with Biometric
+                            </button>
+                            <button type="button" class="verify-btn otp">
+                                <i class="fas fa-key"></i>
+                                Verify with OTP
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="auth-method-card" onclick="selectAuthMethod('mobile')">
+                    <i class="fas fa-mobile-alt"></i>
+                    <h3>Mobile OTP</h3>
+                    <p>Login using OTP sent to your registered mobile number</p>
+                    <div id="mobile-form" class="auth-method-form hidden">
+                        <div class="form-group">
+                            <label for="mobile-number">Mobile Number</label>
+                            <div class="mobile-input">
+                                <span class="country-code">+91</span>
+                                <input type="tel" id="mobile-number" pattern="\d{10}" maxlength="10" placeholder="Enter mobile number">
+                            </div>
+                        </div>
+                        <button type="button" class="submit-button send-otp">Send OTP</button>
+                        <div class="otp-input-group hidden">
+                            <label>Enter OTP</label>
+                            <div class="otp-inputs">
+                                <input type="text" maxlength="1" class="otp-input">
+                                <input type="text" maxlength="1" class="otp-input">
+                                <input type="text" maxlength="1" class="otp-input">
+                                <input type="text" maxlength="1" class="otp-input">
+                                <input type="text" maxlength="1" class="otp-input">
+                                <input type="text" maxlength="1" class="otp-input">
+                            </div>
+                            <div class="otp-actions">
+                                <button type="submit" class="submit-button verify-otp">Verify OTP</button>
+                                <button type="button" class="resend-otp">Resend OTP</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Registration Modal -->
+    <div id="register-modal" class="modal">
+        <div class="modal-content auth-modal">
+            <span class="close-button" onclick="closeModal('register-modal')">&times;</span>
+            <h2>Create Account</h2>
+            <form id="register-form" class="auth-form">
+                <div class="form-group">
+                    <label for="register-name">Full Name</label>
+                    <input type="text" id="register-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-email">Email</label>
+                    <input type="email" id="register-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-password">Password</label>
+                    <input type="password" id="register-password" required>
+                    <div class="password-strength"></div>
+                </div>
+                <div class="form-group">
+                    <label for="register-confirm-password">Confirm Password</label>
+                    <input type="password" id="register-confirm-password" required>
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" required>
+                        I agree to the <a href="#">Terms & Conditions</a> and <a href="#">Privacy Policy</a>
+                    </label>
+                </div>
+                <button type="submit" class="submit-button">Create Account</button>
+                <div class="auth-separator">
+                    <span>OR</span>
+                </div>
+                <div class="social-login">
+                    <button type="button" class="google-btn">
+                        <i class="fab fa-google"></i> Continue with Google
+                    </button>
+                    <button type="button" class="facebook-btn">
+                        <i class="fab fa-facebook-f"></i> Continue with Facebook
+                    </button>
+                </div>
+                <p class="auth-switch">
+                    Already have an account? <a href="#" onclick="switchToLogin()">Login</a>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="floating-elements">
+            <div class="floating-element"></div>
+            <div class="floating-element"></div>
+            <div class="floating-element"></div>
+            <div class="floating-element"></div>
+            <div class="floating-element"></div>
+            <div class="floating-element"></div>
+            <div class="floating-element"></div>
+            <div class="floating-element"></div>
+        </div>
+        <div class="hero-content">
+            <div class="hero-text-wrapper">
+                <h1 class="hero-title">Welcome to <span class="highlight">KalyanMitra</span><br>AI-Powered Platform</h1>
+                <p class="hero-subtitle" data-translate="discover">Discover personalized recommendations for government schemes, scholarships, and welfare programs.</p>
+                <button class="cta-button" onclick="showRegistration()" data-translate="getStarted">
+                    <span>Get Started</span>
+                </button>
+            </div>
+            <div class="hero-features">
+                <div class="feature-item">
+                    <i class="fas fa-robot"></i>
+                    <h3>AI Recommendations</h3>
+                    <p>Get personalized scheme suggestions based on your profile</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>Secure Authentication</h3>
+                    <p>Login safely with Aadhaar or mobile OTP</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-language"></i>
+                    <h3>Multiple Languages</h3>
+                    <p>Access in your preferred language</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fas fa-bell"></i>
+                    <h3>Real-time Updates</h3>
+                    <p>Get notifications about scheme status</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Registration Form -->
+    <div id="registration-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal('registration-modal')">&times;</span>
+            <h2 data-translate="personalDetails">Personal Details</h2>
+            <form id="user-details-form">
+                <div class="form-group">
+                    <label for="name" data-translate="fullName">Full Name</label>
+                    <input type="text" id="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="age" data-translate="age">Age</label>
+                    <input type="number" id="age" required>
+                </div>
+                <div class="form-group">
+                    <label for="occupation" data-translate="occupation">Occupation</label>
+                    <select id="occupation" required>
+                        <option value="" data-translate="selectOccupation">Select Occupation</option>
+                        <option value="student" data-translate="student">Student</option>
+                        <option value="farmer" data-translate="farmer">Farmer</option>
+                        <option value="employed" data-translate="employed">Employed</option>
+                        <option value="unemployed" data-translate="unemployed">Unemployed</option>
+                        <option value="senior" data-translate="seniorCitizen">Senior Citizen</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="income" data-translate="annualIncome">Annual Income</label>
+                    <input type="number" id="income" required>
+                </div>
+                <div class="form-group">
+                    <label for="region" data-translate="region">Region</label>
+                    <select id="region" required>
+                        <option value="" data-translate="selectRegion">Select Region</option>
+                        <option value="urban" data-translate="urban">Urban</option>
+                        <option value="rural" data-translate="rural">Rural</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-button" data-translate="findSchemeButton">Find Schemes</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Schemes Dashboard -->
+    <section id="schemes-dashboard" class="dashboard hidden">
+        <div class="filters">
+            <h3 data-translate="filterSchemes">Filter Schemes</h3>
+            <div class="filter-options">
+                <select id="category-filter">
+                    <option value="all" data-translate="allCategories">All Categories</option>
+                    <option value="education" data-translate="education">Education</option>
+                    <option value="agriculture" data-translate="agriculture">Agriculture</option>
+                    <option value="healthcare" data-translate="healthcare">Healthcare</option>
+                    <option value="employment" data-translate="employment">Employment</option>
+                    <option value="housing" data-translate="housing">Housing</option>
+                    <option value="finance" data-translate="finance">Finance</option>
+                </select>
+                <input type="text" id="search-schemes" data-placeholder="searchSchemes" placeholder="Search schemes...">
+            </div>
+        </div>
+        <div id="schemes-container"></div>
+    </section>
+
+    <!-- Help & Support Section -->
+    <section id="help" class="support-section">
+        <h2 data-translate="helpSupport">Help & Support</h2>
+        <div class="support-grid">
+            <div class="support-card">
+                <h3><i class="fas fa-book"></i> User Guide</h3>
+                <p>Comprehensive guide on how to use our platform, find schemes, and apply for them effectively.</p>
+                <a href="user-guide.html" class="cta-button">Read Guide</a>
+            </div>
+            <div class="support-card">
+                <h3><i class="fas fa-video"></i> Video Tutorials</h3>
+                <p>Step-by-step video guides explaining the application process and platform features.</p>
+                <a href="video-tutorials.html" class="cta-button">Watch Videos</a>
+            </div>
+            <div class="support-card">
+                <h3><i class="fas fa-headset"></i> Support Center</h3>
+                <p>Get assistance from our dedicated support team for any queries or issues.</p>
+                <a href="support-center.html" class="cta-button">Get Help</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="faq-section">
+        <h2 data-translate="faq">Frequently Asked Questions</h2>
+        <div class="faq-container">
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>How do I check my eligibility for schemes?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>You can check your eligibility by filling out the personal details form on our platform. Our system will automatically match you with suitable schemes based on your profile information such as age, occupation, income, and region.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>What documents are required for scheme applications?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Common required documents include proof of identity (Aadhaar/PAN), proof of address, income certificate, and occupation-related documents. Specific requirements vary by scheme and will be listed in the scheme details.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>How long does the application process take?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Processing times vary by scheme. Typically, applications are processed within 15-30 working days. You can track your application status through your profile dashboard.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">
+                    <span>Can I apply for multiple schemes simultaneously?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes, you can apply for multiple schemes if you meet their eligibility criteria. However, some schemes may have restrictions on simultaneous applications, which will be mentioned in their terms and conditions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Us Section -->
+    <section id="contact" class="contact-section">
+        <h2 data-translate="contactUs">Contact Us</h2>
+        <div class="contact-container">
+            <div class="contact-info">
+                <h3>Get in Touch</h3>
+                <div class="contact-info-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div>
+                        <h4>Address</h4>
+                        <p>123 Government Complex, Sector 10<br>New Delhi - 110001, India</p>
+                    </div>
+                </div>
+                <div class="contact-info-item">
+                    <i class="fas fa-phone"></i>
+                    <div>
+                        <h4>Phone</h4>
+                        <p>Toll Free: 1800-123-4567<br>Helpline: +91-11-2345-6789</p>
+                    </div>
+                </div>
+                <div class="contact-info-item">
+                    <i class="fas fa-envelope"></i>
+                    <div>
+                        <h4>Email</h4>
+                        <p>support@citizenscheme.gov.in<br>info@citizenscheme.gov.in</p>
+                    </div>
+                </div>
+                <div class="contact-info-item">
+                    <i class="fas fa-clock"></i>
+                    <div>
+                        <h4>Working Hours</h4>
+                        <p>Monday - Friday: 9:00 AM - 6:00 PM<br>Saturday: 9:00 AM - 1:00 PM</p>
+                    </div>
+                </div>
+            </div>
+            <div class="contact-form">
+                <h3>Send us a Message</h3>
+                <form id="contact-form">
+                    <div class="form-group">
+                        <label for="contact-name">Full Name</label>
+                        <input type="text" id="contact-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-email">Email</label>
+                        <input type="email" id="contact-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-subject">Subject</label>
+                        <input type="text" id="contact-subject" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-message">Message</label>
+                        <textarea id="contact-message" required></textarea>
+                    </div>
+                    <button type="submit">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3 data-translate="aboutUs">About Us</h3>
+                <p data-translate="aboutUsText">Connecting citizens with government welfare schemes and opportunities.</p>
+            </div>
+            <div class="footer-section">
+                <h3 data-translate="quickLinks">Quick Links</h3>
+                <a href="#help" data-translate="helpSupport">Help & Support</a>
+                <a href="#faq" data-translate="faq">FAQ</a>
+                <a href="#contact" data-translate="contactUs">Contact Us</a>
+            </div>
+            <div class="footer-section">
+                <h3 data-translate="connectWithUs">Connect With Us</h3>
+                <div class="social-links">
+                    <a href="mailto:support@citizenscheme.gov.in" target="_blank" rel="noopener noreferrer" aria-label="Email us">
+                        <i class="fas fa-envelope"></i>
+                    </a>
+                    <a href="tel:1800-123-4567" target="_blank" rel="noopener noreferrer" aria-label="Call us">
+                        <i class="fas fa-phone"></i>
+                    </a>
+                    <a href="#contact" aria-label="Contact form">
+                        <i class="fas fa-message"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Secure Auth Button -->
+    <button id="secure-auth-btn" class="floating-auth-btn" onclick="toggleSecureAuth()">
+        <i class="fas fa-shield-alt"></i>
+        <span>Secure Authentication</span>
+    </button>
+
+    <script src="script.js"></script>
+</body>
+</html>
